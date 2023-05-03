@@ -268,7 +268,9 @@ int main(int argc, char *argv[])
 
         // notify all processes that D has been updated
         // that is AllReduce the changed variable
-        MPI_Allreduce(&changed, &changed, 1, MPI_INT, MPI_LOR, MPI_COMM_WORLD);
+        bool newChange=false;
+        MPI_Allreduce(&newChange, &changed, 1, MPI_C_BOOL, MPI_LOR, MPI_COMM_WORLD);
+        changed=newChange;
     }
 
     // now we will print the results

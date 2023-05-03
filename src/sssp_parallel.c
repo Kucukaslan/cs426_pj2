@@ -55,35 +55,35 @@ int main(int argc, char *argv[])
             edges = &(offsets[numVertices + 1]);
             weights = &(offsets[numVertices + 1 + numEdges]);
             // print the edges, weights and offsets arrays
-            printf("\noffsets: ");
+            // printf("\noffsets: ");
             for (int i = 0; i < numVertices + 1; i++)
             {
-                printf("%3d ", offsets[i]);
+                // printf("%3d ", offsets[i]);
             }
-            printf("\nedges:   ");
+            // printf("\nedges:   ");
             for (int i = 0; i < numEdges; i++)
             {
-                printf("%3d ", edges[i]);
+                // printf("%3d ", edges[i]);
             }
-            printf("\nweights: ");
+            // printf("\nweights: ");
             for (int i = 0; i < numEdges; i++)
             {
-                printf("%3d ", weights[i]);
+                // printf("%3d ", weights[i]);
             }
-            printf("\n\n");
+            // printf("\n\n");
         }
 
         // print each node and its neighbors
-        for (int i = 0; i < numVertices; i++)
-        {
-            printf("Node %d: ", i);
-            for (int j = offsets[i]; j < offsets[i + 1]; j++)
-            {
-                printf("(%d, %d)", edges[j], weights[j]);
-            }
-            printf("\n");
-        }
-        printf("\n\n");
+        // for (int i = 0; i < numVertices; i++)
+        // {
+        //     printf("Node %d: ", i);
+        //     for (int j = offsets[i]; j < offsets[i + 1]; j++)
+        //     {
+        //         printf("(%d, %d)", edges[j], weights[j]);
+        //     }
+        //     printf("\n");
+        // }
+        // printf("\n\n");
     } // end of rank 0 reading the file
 
     // Broadcast the number of vertices, edges and offsets to all processes
@@ -195,12 +195,12 @@ int main(int argc, char *argv[])
 
     if (rank == 0)
     {
-        printf("D: ");
+        // printf("D: ");
         for (int i = 0; i < numVertices; i++)
         {
-            printf("D[%d]=%3d \n", i, D[i]);
+            // printf("D[%d]=%3d \n", i, D[i]);
         }
-        printf("\n");
+        // printf("\n");
     }
     // initialize R
     for (int i = 0; i < numVerticesPerProcess; i++)
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
                 {
                     // log the change
                     *changed = 1;
-                    printf("%d changed distance of %d from %d to %d by coming from %d. changed=%d \n", rank, j + numVerticesPerProcess * rank, R[j], D[u] + w, u, *changed);
+                    // printf("%d changed distance of %d from %d to %d by coming from %d. changed=%d \n", rank, j + numVerticesPerProcess * rank, R[j], D[u] + w, u, *changed);
                     R[j] = D[u] + w;
                 }
                 // // if (R[j] + w >= 0 && R[j] + w < R[u - offsetsPerProcess[0]])
@@ -257,13 +257,13 @@ int main(int argc, char *argv[])
                 // }
             }
         }
-        printf("%d: at the end of iteration %d R: ", rank, i);
+        // printf("%d: at the end of iteration %d R: ", rank, i);
 
         for (int j = 0; j < numVerticesPerProcess; j++)
         {
-            printf("D[%d]=R[%d]=%d, ", j + rank * numVerticesPerProcess, j, R[j]);
+            // printf("D[%d]=R[%d]=%d, ", j + rank * numVerticesPerProcess, j, R[j]);
         }
-        printf("\n");
+        // printf("\n");
 
         // update global distance D with Allgather
         MPI_Allgather(R, numVerticesPerProcess, MPI_INT, D, numVerticesPerProcess, MPI_INT, MPI_COMM_WORLD);
@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
         // notify all processes that D has been updated
         // that is AllReduce the changed variable
         MPI_Allreduce(MPI_IN_PLACE, changed, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        printf("%d: at the end of iteration %d changed=%d ", rank, i, *changed);
+        //  printf("%d: at the end of iteration %d changed=%d ", rank, i, *changed);
     }
 
     // now we will print the results

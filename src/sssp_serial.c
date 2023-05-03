@@ -38,34 +38,34 @@ int main(int argc, char *argv[])
         edges = &(offsets[numVertices + 1]);
         weights = &(offsets[numVertices + 1 + numEdges]);
         // print the edges, weights and offsets arrays
-        printf("offsets: ");
-        for (int i = 0; i < numVertices + 1; i++)
-        {
-            printf("%3d ", offsets[i]);
-        }
-        printf("\nedges:   ");
-        for (int i = 0; i < numEdges; i++)
-        {
-            printf("%3d ", edges[i]);
-        }
-        printf("\nweights: ");
-        for (int i = 0; i < numEdges; i++)
-        {
-            printf("%3d ", weights[i]);
-        }
-        printf("\n");
+        // printf("offsets: ");
+        // for (int i = 0; i < numVertices + 1; i++)
+        // {
+        //     printf("%3d ", offsets[i]);
+        // }
+        // printf("\nedges:   ");
+        // for (int i = 0; i < numEdges; i++)
+        // {
+        //     printf("%3d ", edges[i]);
+        // }
+        // printf("\nweights: ");
+        // for (int i = 0; i < numEdges; i++)
+        // {
+        //     printf("%3d ", weights[i]);
+        // }
+        // printf("\n");
     }
 
-    // print each node and its neighbors
-    for (int i = 0; i < numVertices; i++)
-    {
-        printf("Node %d: ", i);
-        for (int j = offsets[i]; j < offsets[i + 1]; j++)
-        {
-            printf("(%d, %d)", edges[j], weights[j]);
-        }
-        printf("\n");
-    }
+    // // print each node and its neighbors
+    // for (int i = 0; i < numVertices; i++)
+    // {
+    //     printf("Node %d: ", i);
+    //     for (int j = offsets[i]; j < offsets[i + 1]; j++)
+    //     {
+    //         printf("(%d, %d)", edges[j], weights[j]);
+    //     }
+    //     printf("\n");
+    // }
 
     // allocate memory for the distances array
     int *distances = (int *)malloc(numVertices * sizeof(int));
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
                     distances[u] + w >= 0 && distances[j] > distances[u] + w)
                 {
                     // log the change
-                    printf("Changed distance of %d from %d to %d due w=%d and d..[%d]=%d\n", j, distances[j], distances[u] + w, w, u, distances[u]);
+                    // printf("Changed distance of %d from %d to %d due w=%d and d..[%d]=%d\n", j, distances[j], distances[u] + w, w, u, distances[u]);
                     distances[j] = distances[u] + w;
                     changed = true;
                 }

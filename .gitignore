@@ -1,5 +1,5 @@
-out.txt
-sssp_seriall
+out*.txt
+sssp_serial
 sssp_parallel 
 
 .vscode/

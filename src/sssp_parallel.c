@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
         printf("D: ");
         for (int i = 0; i < numVertices; i++)
         {
-            printf("D[%d]=%3d ", i, D[i]);
+            printf("D[%d]=%3d \n", i, D[i]);
         }
         printf("\n");
     }
@@ -206,17 +206,18 @@ int main(int argc, char *argv[])
     for (int i = 0; i < numVerticesPerProcess; i++)
     {
         R[i] = INT_MAX;
-        if (i + offsetsPerProcess[0] == sourceVertex)
+        if (i + rank * numVerticesPerProcess == sourceVertex)
         {
             R[i] = 0; // to make sure that the source vertex is 0
         }
     }
 
     // now we will start the iterations
-    bool changed = true;
-    for (int i = 0; i < numVertices - 1 && changed; i++)
+    int *changed = malloc(sizeof(int));
+    *changed = 1;
+    for (int i = 0; i < numVertices - 1 && *changed > 0; i++)
     {
-        changed = false;
+        *changed = 0;
 
         // // update R from D
         // for (int j = 0; j < numVerticesPerProcess; j++)
@@ -240,9 +241,9 @@ int main(int argc, char *argv[])
                 if (D[u] + w > 0 && D[u] + w < R[j])
                 {
                     // log the change
-                    printf("%d changed distance of %d from %d to %d \n", rank, u, R[j], D[u] + w);
+                    *changed = 1;
+                    printf("%d changed distance of %d from %d to %d by coming from %d. changed=%d \n", rank, j + numVerticesPerProcess * rank, R[j], D[u] + w, u, *changed);
                     R[j] = D[u] + w;
-                    changed = true;
                 }
                 // // if (R[j] + w >= 0 && R[j] + w < R[u - offsetsPerProcess[0]])
                 // if (R[j] + w >= 0 && R[j] + w < D[u])
@@ -256,10 +257,11 @@ int main(int argc, char *argv[])
                 // }
             }
         }
-        printf("%d: at %d R: ", rank, i);
+        printf("%d: at the end of iteration %d R: ", rank, i);
+
         for (int j = 0; j < numVerticesPerProcess; j++)
         {
-            printf("%d ", R[j]);
+            printf("D[%d]=R[%d]=%d, ", j + rank * numVerticesPerProcess, j, R[j]);
         }
         printf("\n");
 
@@ -268,9 +270,8 @@ int main(int argc, char *argv[])
 
         // notify all processes that D has been updated
         // that is AllReduce the changed variable
-        bool newChange=false;
-        MPI_Allreduce(&newChange, &changed, 1, MPI_C_BOOL, MPI_LOR, MPI_COMM_WORLD);
-        changed=newChange;
+        MPI_Allreduce(MPI_IN_PLACE, changed, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+        printf("%d: at the end of iteration %d changed=%d ", rank, i, *changed);
     }
 
     // now we will print the results
